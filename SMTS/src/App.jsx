@@ -1,16 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
 function App() {
-  const [count, setCount] = useState(0)
-
+  console.log("환경변수 테스트:", import.meta.env.VITE_project_id);
   return (
     <>
-      <h1>test</h1>
+      <h1>testdddd</h1>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
