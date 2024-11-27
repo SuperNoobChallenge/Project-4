@@ -1,0 +1,187 @@
+/* 전체 레이아웃 */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* 상단 네비게이션 */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.nav-right {
+  display: flex;
+  gap: 10px;
+}
+
+.outline {
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.outline:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* 페이지 제목과 버튼 */
+.page-header {
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  align-items: center;
+  margin-top: 10px;
+  position: relative; /* 버튼 위치 조정을 위해 상대 위치 지정 */
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.favorite-history {
+  position: absolute;
+  right: 0;
+}
+
+/* 검색 창과 + 버튼 */
+.search-add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0; /* 위아래 여백 */
+}
+
+.search-input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #0056b3;
+}
+
+/* 메인 컨텐츠 레이아웃 */
+.content {
+  display: grid;
+  grid-template-columns: 1fr 3fr; /* 필터와 리스트의 비율 */
+  gap: 20px;
+  max-width: 1200px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 중앙 정렬 */
+}
+
+/* 필터 섹션 */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.filters select,
+.filters input {
+  margin-top: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.search-button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 장학금 리스트 */
+.scholarship-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.scholarship-item {
+  flex: 1 1 calc(80% - 15px); /* 두 개씩 배치 */
+  max-width: calc(80% - 15px);
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.scholarship-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.scholarship-item div {
+  flex-grow: 1;
+}
+
+.favorite-star {
+  font-size: 20px;
+  color: #f4c242;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* 검색 창과 + 버튼 */
+.search-add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+/* 검색 입력 필드 스타일 */
+.search {
+  position: relative;
+  width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* 검색 아이콘 스타일 */
+.search img {
+  position: absolute;
+  width: 17px;
+  top: 10px;
+  right: 12px;
+}
