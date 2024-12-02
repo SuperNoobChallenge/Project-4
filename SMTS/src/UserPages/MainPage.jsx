@@ -15,7 +15,7 @@ function App() {
       </nav>
 
       <header className="page-header">
-        <h1>메인 페이지</h1>
+        <h1>진짜 자동 배포인가 메인 페이지</h1>
         <button className="favorite-history outline">즐겨찾기 기록</button>
       </header>
 
