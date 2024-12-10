@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { db } from "../firebase"; // Firebase 설정 파일에서 db를 가져옵니다.
+import { collection, getDocs } from "firebase/firestore"; // 여기서 collection과 getDocs를 가져옵니다.
 import "../styles/MainPage.css";
 
 function App() {
   const navigate = useNavigate();
+  const [scholarships, setScholarships] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const querySnapshot = await getDocs(collection(db, "scholarships"));
+      setScholarships(
+        querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+      );
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="container">
@@ -61,18 +74,17 @@ function App() {
         </aside>
 
         <main className="scholarship-list">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+          {scholarships.map((item) => (
             <div
               className="scholarship-item"
-              key={item}
-              onClick={() => navigate(`/detail/${item}`)}
+              key={item.id}
+              onClick={() => navigate(`/detail/${item.id}`)}
               style={{ cursor: "pointer" }}
             >
               <img src="#" alt="장학금 이미지" />
               <div>
-                <h3>장학금 이름 {item}</h3>
-                <p>장학금 혜택</p>
-                <p>제공 기관</p>
+                <h3>{item.name}</h3>
+                <p>{item.benefit}</p>
                 <span>D-day: 신청 기간</span>
               </div>
               <button className="favorite-star">★</button>

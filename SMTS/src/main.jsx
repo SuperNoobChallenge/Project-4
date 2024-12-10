@@ -5,6 +5,7 @@ import App from "./UserPages/MainPage.jsx";
 import LoginPage from "./UserPages/LoginPage.jsx";
 import RegisterPage from "./UserPages/RegisterPage.jsx";
 import DetailPage from "./UserPages/DetailPage.jsx";
+import AddPage from "./UserPages/AddPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -14,6 +15,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/detail/:id" element={<DetailPage />} />
+        <Route path="/add" element={<AddPage />} />
       </Routes>
     </Router>
   </StrictMode>
