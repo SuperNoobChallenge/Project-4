@@ -1,7 +1,11 @@
+// SMTS/src/UserPages/MainPage.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/MainPage.css";
 
 function App() {
+  const navigate = useNavigate();
+
   return (
     <div className="container">
       <nav className="top-nav">
@@ -9,8 +13,12 @@ function App() {
           {/* 필요한 경우 좌측에 추가 콘텐츠를 넣을 수 있습니다 */}
         </div>
         <div className="nav-right">
-          <button className="outline">로그인</button>
-          <button className="outline">회원가입</button>
+          <button className="outline" onClick={() => navigate("/login")}>
+            로그인
+          </button>
+          <button className="outline" onClick={() => navigate("/register")}>
+            회원가입
+          </button>
         </div>
       </nav>
 
