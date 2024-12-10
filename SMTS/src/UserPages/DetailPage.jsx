@@ -1,7 +1,10 @@
 import React from "react";
-import "./DetailPage.css";
+import { useParams } from "react-router-dom";
+import "../styles/DetailPage.css";
 
 const DetailPage = () => {
+  const { id } = useParams();
+
   return (
     <div className="detail-page">
       <div className="image-container">
@@ -12,7 +15,7 @@ const DetailPage = () => {
         />
       </div>
       <div className="info-container">
-        <h2>장학금 이름</h2>
+        <h2>장학금 이름 {id}</h2>
         <p>D day</p>
         <ul>
           <li>제공 기관</li>

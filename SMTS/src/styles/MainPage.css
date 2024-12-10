@@ -36,10 +36,10 @@
 /* 페이지 제목과 버튼 */
 .page-header {
   display: flex;
-  justify-content: center; /* 중앙 정렬 */
+  justify-content: center;
   align-items: center;
   margin-top: 10px;
-  position: relative; /* 버튼 위치 조정을 위해 상대 위치 지정 */
+  position: relative;
 }
 
 .page-header h1 {
@@ -56,7 +56,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 0; /* 위아래 여백 */
+  margin: 20px 0;
 }
 
 .search-input {
@@ -84,10 +84,10 @@
 /* 메인 컨텐츠 레이아웃 */
 .content {
   display: grid;
-  grid-template-columns: 1fr 3fr; /* 필터와 리스트의 비율 */
+  grid-template-columns: 1fr 3fr;
   gap: 20px;
-  max-width: 1200px; /* 최대 너비 설정 */
-  margin: 0 auto; /* 중앙 정렬 */
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* 필터 섹션 */
@@ -127,7 +127,7 @@
 }
 
 .scholarship-item {
-  flex: 1 1 calc(80% - 15px); /* 두 개씩 배치 */
+  flex: 1 1 calc(80% - 15px);
   max-width: calc(80% - 15px);
   display: flex;
   align-items: center;
@@ -154,34 +154,4 @@
   background: none;
   border: none;
   cursor: pointer;
-}
-
-/* 검색 창과 + 버튼 */
-.search-add {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
-}
-
-/* 검색 입력 필드 스타일 */
-.search {
-  position: relative;
-  width: 300px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-/* 검색 아이콘 스타일 */
-.search img {
-  position: absolute;
-  width: 17px;
-  top: 10px;
-  right: 12px;
 }
