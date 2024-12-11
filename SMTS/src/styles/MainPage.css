@@ -127,8 +127,8 @@
 }
 
 .scholarship-item {
-  flex: 1 1 calc(80% - 15px);
-  max-width: calc(80% - 15px);
+  flex: 0 0 600px;
+  height: 150px;
   display: flex;
   align-items: center;
   padding: 15px;

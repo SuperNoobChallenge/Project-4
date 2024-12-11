@@ -3,20 +3,34 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../firebase"; // Firebase 설정 파일에서 db를 가져옵니다.
 import { collection, getDocs } from "firebase/firestore"; // 여기서 collection과 getDocs를 가져옵니다.
 import "../styles/MainPage.css";
+import ScholarshipCard from "../components/ScholarshipCard";
 
 function App() {
   const navigate = useNavigate();
   const [scholarships, setScholarships] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredScholarships, setFilteredScholarships] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const querySnapshot = await getDocs(collection(db, "scholarships"));
-      setScholarships(
-        querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-      );
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setScholarships(data);
+      setFilteredScholarships(data);
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setFilteredScholarships(
+      scholarships.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, scholarships]);
 
   return (
     <div className="container">
@@ -35,7 +49,7 @@ function App() {
       </nav>
 
       <header className="page-header">
-        <h1>진짜 자동 배포인가 메인 페이지</h1>
+        <h1>메인 페이지</h1>
         <button
           className="favorite-history outline"
           onClick={() => navigate("/favorites")}
@@ -45,7 +59,13 @@ function App() {
       </header>
 
       <div className="search-add">
-        <input type="text" className="search-input" placeholder="검색" />
+        <input
+          type="text"
+          className="search-input"
+          placeholder="검색"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
         <button className="add-button" onClick={() => navigate("/add")}>
           +
         </button>
@@ -74,21 +94,8 @@ function App() {
         </aside>
 
         <main className="scholarship-list">
-          {scholarships.map((item) => (
-            <div
-              className="scholarship-item"
-              key={item.id}
-              onClick={() => navigate(`/detail/${item.id}`)}
-              style={{ cursor: "pointer" }}
-            >
-              <img src="#" alt="장학금 이미지" />
-              <div>
-                <h3>{item.name}</h3>
-                <p>{item.benefit}</p>
-                <span>D-day: 신청 기간</span>
-              </div>
-              <button className="favorite-star">★</button>
-            </div>
+          {filteredScholarships.map((item) => (
+            <ScholarshipCard key={item.id} item={item} />
           ))}
         </main>
       </div>
