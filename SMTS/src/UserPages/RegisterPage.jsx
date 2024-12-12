@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 import "../styles/RegisterPage.css";
 
 function RegisterPage() {
@@ -22,8 +24,15 @@ function RegisterPage() {
         formData.email,
         formData.password
       );
-      console.log("User registered:", userCredential.user);
-      // 추가적인 회원가입 후 처리 로직을 여기에 추가하세요
+      const user = userCredential.user;
+
+      // users 컬렉션에 문서 생성 (favorites 배열 초기화)
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        favorites: []
+      });
+
+      console.log("User registered:", user);
     } catch (error) {
       console.error("Error registering user:", error);
     }

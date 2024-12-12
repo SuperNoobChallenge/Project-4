@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import "../styles/DetailPage.css";
@@ -7,6 +7,8 @@ import "../styles/DetailPage.css";
 const DetailPage = () => {
   const { id } = useParams();
   const [scholarship, setScholarship] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchScholarship = async () => {
@@ -65,6 +67,8 @@ const DetailPage = () => {
             </a>
           </li>
         </ul>
+        {/* 뒤로 가기 버튼 - navigate(-1) 사용 시 state 유지됨 */}
+        <button onClick={() => navigate(-1)}>뒤로 가기</button>
       </div>
     </div>
   );

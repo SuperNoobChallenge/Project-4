@@ -1,16 +1,30 @@
 // SMTS/src/UserPages/LoginPage.jsx
 
 import React, { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 로그인 로직을 여기에 추가하세요
-    console.log("Email:", email);
-    console.log("Password:", password);
+    const auth = getAuth();
+    
+    try {
+      // 파이어베이스 이메일/비밀번호 로그인 시도
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("로그인 성공:", userCredential.user);
+      // 로그인 성공 시 메인 페이지로 이동
+      navigate("/");
+    } catch (error) {
+      // 로그인 실패 시 에러 메시지 표시
+      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      console.error("로그인 에러:", error);
+    }
   };
 
   const handleForgotPassword = (e) => {
@@ -30,10 +44,11 @@ function LoginPage() {
         borderRadius: "5px",
       }}
     >
-      <h2>Sign in</h2>
+      <h2>로그인</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: "10px" }}>
-          <label>Email</label>
+          <label>이메일</label>
           <input
             type="email"
             value={email}
@@ -42,7 +57,7 @@ function LoginPage() {
           />
         </div>
         <div style={{ marginBottom: "10px" }}>
-          <label>Password</label>
+          <label>비밀번호</label>
           <input
             type="password"
             value={password}
@@ -61,7 +76,7 @@ function LoginPage() {
             borderRadius: "5px",
           }}
         >
-          Sign In
+          로그인
         </button>
       </form>
       <a
@@ -69,7 +84,7 @@ function LoginPage() {
         onClick={handleForgotPassword}
         style={{ display: "block", marginTop: "10px", textAlign: "center" }}
       >
-        Forgot password?
+        비밀번호를 잊으셨나요?
       </a>
     </div>
   );

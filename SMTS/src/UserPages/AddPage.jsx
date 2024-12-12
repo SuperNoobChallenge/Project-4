@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { db } from "../firebase"; // Firebase 설정 파일에서 db를 가져옵니다.
-import { collection, addDoc } from "firebase/firestore";
-import "../styles/AddPage.css"; // 스타일 파일을 추가합니다.
+import { db } from "../firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import "../styles/AddPage.css";
 
 function AddPage() {
   const [name, setName] = useState("");
@@ -18,6 +18,8 @@ function AddPage() {
   const [contact, setContact] = useState("");
   const [incomeLevel, setIncomeLevel] = useState(1);
   const [website, setWebsite] = useState("");
+  const [location, setLocation] = useState("");
+  const [educationLevel, setEducationLevel] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,8 +37,11 @@ function AddPage() {
         method,
         documents,
         contact,
-        incomeLevel,
+        incomeLevel: Number(incomeLevel), // 숫자로 변환해주면 좋음
         website,
+        location,
+        educationLevel,
+        createdAt: serverTimestamp(), // 현재 서버 시간 기록
       });
       alert("데이터가 추가되었습니다!");
     } catch (e) {
@@ -92,12 +97,6 @@ function AddPage() {
         />
         <input
           type="text"
-          placeholder="신청 기간"
-          value={applicationPeriod}
-          onChange={(e) => setApplicationPeriod(e.target.value)}
-        />
-        <input
-          type="text"
           placeholder="지원 절차"
           value={procedure}
           onChange={(e) => setProcedure(e.target.value)}
@@ -135,6 +134,18 @@ function AddPage() {
           placeholder="사이트 주소"
           value={website}
           onChange={(e) => setWebsite(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="지역"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="학력"
+          value={educationLevel}
+          onChange={(e) => setEducationLevel(e.target.value)}
         />
         <button type="submit">추가</button>
       </form>

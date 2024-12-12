@@ -6,6 +6,7 @@ import LoginPage from "./UserPages/LoginPage.jsx";
 import RegisterPage from "./UserPages/RegisterPage.jsx";
 import DetailPage from "./UserPages/DetailPage.jsx";
 import AddPage from "./UserPages/AddPage.jsx";
+import FavoritesPage from "./UserPages/FavoritesPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -16,6 +17,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/detail/:id" element={<DetailPage />} />
         <Route path="/add" element={<AddPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
       </Routes>
     </Router>
   </StrictMode>
