@@ -158,9 +158,6 @@ function App() {
               <button className="outline" onClick={handleLogout}>
                 로그아웃
               </button>
-              <button className="outline" onClick={() => navigate("/profile")}>
-                마이페이지
-              </button>
             </>
           ) : (
             <>
