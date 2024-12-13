@@ -32,8 +32,9 @@ function App() {
   // 기본 정렬 옵션을 createdAt으로 (추가 순), 최근 추가된 데이터가 위로 오도록 정렬
   const [sortOption, setSortOption] = useState("createdAt");
 
+  const auth = getAuth();
+
   useEffect(() => {
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser && currentUser.email === "admin@admin.com") {
@@ -42,7 +43,7 @@ function App() {
     });
 
     return () => unsubscribe();
-  }, [navigate]);
+  }, [navigate, auth]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,10 +137,9 @@ function App() {
   }, [incomeLevel]);
 
   const handleLogout = async () => {
-    const auth = getAuth();
     try {
       await signOut(auth);
-      navigate("/login");
+      window.location.reload(); // 로그아웃 후 페이지 리프레시
     } catch (error) {
       console.error("로그아웃 에러:", error);
     }

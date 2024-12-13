@@ -53,3 +53,13 @@
 .info-container a:hover {
   text-decoration: underline;
 }
+
+.delete-button {
+  margin-left: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+}

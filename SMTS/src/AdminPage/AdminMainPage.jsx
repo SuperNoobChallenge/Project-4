@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import "../styles/AdminMainPage.css";
 import ScholarshipCard from "../components/AdminScholarshipCard";
 
@@ -32,8 +32,9 @@ function App() {
   // 기본 정렬 옵션을 createdAt으로 (추가 순), 최근 추가된 데이터가 위로 오도록 정렬
   const [sortOption, setSortOption] = useState("createdAt");
 
+  const auth = getAuth();
+
   useEffect(() => {
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       // 사용자가 없거나, 관리자가 아닐 경우 메인 페이지로 이동
@@ -43,7 +44,7 @@ function App() {
     });
 
     return () => unsubscribe();
-  }, [navigate]);
+  }, [navigate, auth]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,11 +137,22 @@ function App() {
     sessionStorage.setItem("incomeLevel", incomeLevel);
   }, [incomeLevel]);
 
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, "scholarships", id));
+      // 삭제 후 데이터 재조회
+      const updatedScholarships = scholarships.filter((item) => item.id !== id);
+      setScholarships(updatedScholarships);
+      setFilteredScholarships(updatedScholarships); // 필터링된 목록도 업데이트
+    } catch (error) {
+      console.error("삭제 오류:", error);
+    }
+  };
+
   const handleLogout = async () => {
-    const auth = getAuth();
     try {
       await signOut(auth);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("로그아웃 에러:", error);
     }
@@ -196,7 +208,7 @@ function App() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className="add-button" onClick={() => navigate("/add")}>
+        <button className="add-button" onClick={() => navigate("/Admin/add")}>
           +
         </button>
       </div>
@@ -254,6 +266,7 @@ function App() {
               key={item.id}
               item={item}
               onClick={() => handleNavigateToDetail(item.id)}
+              onDelete={() => handleDelete(item.id)}
             />
           ))}
         </main>

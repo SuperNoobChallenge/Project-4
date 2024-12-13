@@ -165,7 +165,7 @@ function FavoritesPage() {
     const authInstance = getAuth();
     try {
       await signOut(authInstance);
-      window.location.href = "/login"; // navigate 대체
+      window.location.href = "/"; // navigate 대체
     } catch (error) {
       console.error("로그아웃 에러:", error);
     }

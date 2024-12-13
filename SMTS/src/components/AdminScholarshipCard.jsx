@@ -7,6 +7,7 @@ import {
   arrayUnion,
   arrayRemove,
   getDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import "../styles/AdminScholarshipCard.css";
@@ -64,10 +65,22 @@ function ScholarshipCard({ item }) {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("이 장학금을 삭제하시겠습니까?");
+    if (confirmDelete) {
+      try {
+        await deleteDoc(doc(db, "scholarships", item.id));
+        navigate("/Admin/");
+      } catch (error) {
+        console.error("장학금 삭제 오류:", error);
+      }
+    }
+  };
+
   return (
     <div
       className="scholarship-item club-card"
-      onClick={() => navigate(`/detail/${item.id}`)}
+      onClick={() => navigate(`/Admin/detail/${item.id}`)}
       style={{ cursor: "pointer" }}
     >
       <img
@@ -86,6 +99,9 @@ function ScholarshipCard({ item }) {
         onClick={handleFavoriteClick}
       >
         {isFavorite ? "★" : "☆"}
+      </button>
+      <button className="delete-button" onClick={handleDelete}>
+        삭제
       </button>
     </div>
   );

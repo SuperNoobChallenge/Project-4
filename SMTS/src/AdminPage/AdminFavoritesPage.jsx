@@ -9,7 +9,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import ScholarshipCard from "../components/ScholarshipCard";
+import ScholarshipCard from "../components/AdminScholarshipCard";
 import "../styles/MainPage.css"; // 메인 페이지와 동일한 스타일 사용
 
 function FavoritesPage() {
@@ -18,9 +18,7 @@ function FavoritesPage() {
   // sessionStorage에서 초기 상태 로드 (메인 페이지와 동일한 패턴)
   const [favoriteScholarships, setFavoriteScholarships] = useState([]);
   const [filteredFavorites, setFilteredFavorites] = useState([]);
-
   const [user, setUser] = useState(null);
-
   const [searchTerm, setSearchTerm] = useState(
     () => sessionStorage.getItem("searchTerm_fav") || ""
   );
@@ -45,6 +43,14 @@ function FavoritesPage() {
       setUser(currentUser);
     });
     return () => unsubscribe();
+  }, [auth]);
+
+  // 사용자 인증 확인
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (!user || user.email !== "admin@admin.com") {
+      window.location.href = "/"; // 메인 페이지로 리디렉션
+    }
   }, [auth]);
 
   useEffect(() => {
@@ -165,7 +171,7 @@ function FavoritesPage() {
     const authInstance = getAuth();
     try {
       await signOut(authInstance);
-      window.location.href = "/login"; // navigate 대체
+      window.location.href = "/"; // navigate 대체
     } catch (error) {
       console.error("로그아웃 에러:", error);
     }
@@ -173,7 +179,7 @@ function FavoritesPage() {
 
   // 여기서는 메인 페이지와 달리 detail페이지 이동 코드가 없지만, 필요하다면 구현
   const handleNavigateToDetail = (id) => {
-    window.location.href = `/detail/${id}`;
+    window.location.href = `/Admin/detail/${id}`;
   };
 
   return (
@@ -228,11 +234,9 @@ function FavoritesPage() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {/* 즐겨찾기 페이지에서 추가 버튼이 필요 없을 수 있지만,
-            메인 페이지와 동일한 레이아웃을 원한다면 그대로 둡니다. */}
         <button
           className="add-button"
-          onClick={() => (window.location.href = "/add")}
+          onClick={() => (window.location.href = "/Admin/add")}
         >
           +
         </button>

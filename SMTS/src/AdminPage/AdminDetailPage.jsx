@@ -7,16 +7,25 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  deleteDoc,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import "../styles/DetailPage.css";
+import "../styles/AdminDetailPage.css";
 
-const DetailPage = () => {
+const AdminDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [scholarship, setScholarship] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const auth = getAuth();
+
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (!user || user.email !== "admin@admin.com") {
+      navigate("/");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const fetchScholarship = async () => {
@@ -89,6 +98,19 @@ const DetailPage = () => {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("이 장학금을 삭제하시겠습니까?");
+    if (confirmDelete) {
+      try {
+        await deleteDoc(doc(db, "scholarships", id));
+        alert("장학금이 삭제되었습니다.");
+        navigate("/Admin/"); // 삭제 후 어드민 페이지로 리디렉션
+      } catch (error) {
+        console.error("장학금 삭제 오류:", error);
+      }
+    }
+  };
+
   if (!scholarship) {
     return <div>Loading...</div>;
   }
@@ -103,6 +125,13 @@ const DetailPage = () => {
           style={{ float: "right" }}
         >
           {isFavorite ? "★" : "☆"}
+        </button>
+        <button
+          onClick={handleDelete}
+          className="delete-button"
+          style={{ float: "right" }}
+        >
+          삭제
         </button>
       </div>
       <div className="image-container">
@@ -142,4 +171,4 @@ const DetailPage = () => {
   );
 };
 
-export default DetailPage;
+export default AdminDetailPage;
