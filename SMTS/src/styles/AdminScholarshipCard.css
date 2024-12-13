@@ -1,0 +1,40 @@
+.scholarship-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  gap: 15px;
+}
+
+.scholarship-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.info-container {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.scholarship-name,
+.scholarship-provider,
+.scholarship-deadline,
+.scholarship-benefit {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 500px;
+}
+
+.favorite-star {
+  flex-shrink: 0;
+  margin-left: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}

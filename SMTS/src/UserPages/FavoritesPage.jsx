@@ -209,7 +209,7 @@ function FavoritesPage() {
       </nav>
 
       <header className="page-header">
-        <h1>즐겨찾기 장학금</h1>
+        <h1>즐겨찾기 페이지</h1>
         {user && (
           <button
             className="favorite-history outline"

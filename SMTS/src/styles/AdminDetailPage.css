@@ -1,0 +1,55 @@
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-container {
+  margin-bottom: 20px;
+}
+
+.scholarship-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.info-container {
+  text-align: left;
+  width: 100%;
+}
+
+.info-container h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #333;
+}
+
+.info-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.info-container li {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #555;
+}
+
+.info-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.info-container a:hover {
+  text-decoration: underline;
+}

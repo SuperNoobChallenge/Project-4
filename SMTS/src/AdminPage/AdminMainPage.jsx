@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../firebase";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
-import "../styles/MainPage.css";
-import ScholarshipCard from "../components/ScholarshipCard";
+import "../styles/AdminMainPage.css";
+import ScholarshipCard from "../components/AdminScholarshipCard";
 
 function App() {
   const navigate = useNavigate();
@@ -36,8 +36,9 @@ function App() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      if (currentUser && currentUser.email === "admin@admin.com") {
-        navigate("/admin"); // 어드민 페이지로 리디렉션
+      // 사용자가 없거나, 관리자가 아닐 경우 메인 페이지로 이동
+      if (!currentUser || currentUser.email !== "admin@admin.com") {
+        navigate("/");
       }
     });
 
@@ -146,7 +147,7 @@ function App() {
   };
 
   const handleNavigateToDetail = (id) => {
-    navigate(`/detail/${id}`);
+    navigate(`/Admin/detail/${id}`);
   };
 
   return (
@@ -176,11 +177,11 @@ function App() {
       </nav>
 
       <header className="page-header">
-        <h1>메인 페이지</h1>
+        <h1>메인 페이지(관리자)</h1>
         {user && (
           <button
             className="favorite-history outline"
-            onClick={() => navigate("/favorites")}
+            onClick={() => navigate("/Admin/favorites")}
           >
             즐겨찾기 기록
           </button>

@@ -1,64 +1,92 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { db } from "../firebase";
+import React, { useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
-import "../styles/MainPage.css";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "../firebase";
 import ScholarshipCard from "../components/ScholarshipCard";
+import "../styles/MainPage.css"; // 메인 페이지와 동일한 스타일 사용
 
-function App() {
-  const navigate = useNavigate();
+function FavoritesPage() {
+  const auth = getAuth();
 
-  // sessionStorage에서 초기 상태 로드
-  const [scholarships, setScholarships] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(
-    () => sessionStorage.getItem("searchTerm") || ""
-  );
-  const [filteredScholarships, setFilteredScholarships] = useState([]);
+  // sessionStorage에서 초기 상태 로드 (메인 페이지와 동일한 패턴)
+  const [favoriteScholarships, setFavoriteScholarships] = useState([]);
+  const [filteredFavorites, setFilteredFavorites] = useState([]);
+
   const [user, setUser] = useState(null);
+
+  const [searchTerm, setSearchTerm] = useState(
+    () => sessionStorage.getItem("searchTerm_fav") || ""
+  );
   const [locationState, setLocationState] = useState(
-    () => sessionStorage.getItem("locationState") || ""
+    () => sessionStorage.getItem("locationState_fav") || ""
   );
   const [educationLevel, setEducationLevel] = useState(
-    () => sessionStorage.getItem("educationLevel") || ""
+    () => sessionStorage.getItem("educationLevel_fav") || ""
   );
   const [incomeLevel, setIncomeLevel] = useState(
-    () => Number(sessionStorage.getItem("incomeLevel")) || 10
+    () => Number(sessionStorage.getItem("incomeLevel_fav")) || 10
   );
 
   // 마감된 장학금 표시 여부
   const [showClosed, setShowClosed] = useState(false);
 
-  // 기본 정렬 옵션을 createdAt으로 (추가 순), 최근 추가된 데이터가 위로 오도록 정렬
+  // 기본 정렬 옵션: createdAt으로 (추가 순, 최신순)
   const [sortOption, setSortOption] = useState("createdAt");
 
   useEffect(() => {
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      if (currentUser && currentUser.email === "admin@admin.com") {
-        navigate("/admin"); // 어드민 페이지로 리디렉션
-      }
     });
-
     return () => unsubscribe();
-  }, [navigate]);
+  }, [auth]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, "scholarships"));
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setScholarships(data);
-      setFilteredScholarships(data);
+    const fetchFavoriteScholarships = async () => {
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
+
+      try {
+        // 사용자 문서에서 즐겨찾기 ID 가져오기
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const favorites = userDocSnap.data().favorites || [];
+          if (favorites.length === 0) {
+            setFavoriteScholarships([]);
+            setFilteredFavorites([]);
+            return;
+          }
+
+          // 즐겨찾기 ID로 장학금 데이터 가져오기
+          const scholarshipsRef = collection(db, "scholarships");
+          const q = query(scholarshipsRef, where("__name__", "in", favorites));
+          const querySnapshot = await getDocs(q);
+          const favoriteScholarshipsData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          setFavoriteScholarships(favoriteScholarshipsData);
+          setFilteredFavorites(favoriteScholarshipsData);
+        }
+      } catch (error) {
+        console.error("즐겨찾기 장학금 불러오기 오류:", error);
+      }
     };
-    fetchData();
-  }, []);
+
+    fetchFavoriteScholarships();
+  }, [auth]);
 
   useEffect(() => {
-    let updatedList = scholarships.filter((item) => {
+    let updatedList = favoriteScholarships.filter((item) => {
       const matchesSearchTerm = item.name
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
@@ -80,7 +108,7 @@ function App() {
 
       // 마감 여부 판단
       const isClosed = new Date(item.deadline) < new Date();
-      const matchesClosed = showClosed || !isClosed; // showClosed가 false면 마감 안된것만, true면 모두 표시
+      const matchesClosed = showClosed || !isClosed;
 
       return (
         matchesSearchTerm &&
@@ -94,59 +122,58 @@ function App() {
     // 정렬 로직
     updatedList = updatedList.sort((a, b) => {
       if (sortOption === "deadline") {
-        // 마감일 빠른 순 (과거 -> 미래)
         const dateA = new Date(a.deadline);
         const dateB = new Date(b.deadline);
-        return dateA - dateB;
+        return dateA - dateB; // 마감일 빠른 순
       } else if (sortOption === "createdAt") {
-        // 최근에 추가된 데이터가 위로 (내림차순 정렬)
         const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
         const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
-        return dateB - dateA; // createdAt 날짜가 큰(최근) 것 먼저
+        return dateB - dateA; // 최신순 (최근 추가된 것 위)
       }
       return 0;
     });
 
-    setFilteredScholarships(updatedList);
+    setFilteredFavorites(updatedList);
   }, [
+    favoriteScholarships,
     searchTerm,
-    scholarships,
-    incomeLevel,
     locationState,
     educationLevel,
+    incomeLevel,
     showClosed,
     sortOption,
   ]);
 
   // 상태 변경 시 sessionStorage 업데이트
   useEffect(() => {
-    sessionStorage.setItem("searchTerm", searchTerm);
+    sessionStorage.setItem("searchTerm_fav", searchTerm);
   }, [searchTerm]);
 
   useEffect(() => {
-    sessionStorage.setItem("locationState", locationState);
+    sessionStorage.setItem("locationState_fav", locationState);
   }, [locationState]);
 
   useEffect(() => {
-    sessionStorage.setItem("educationLevel", educationLevel);
+    sessionStorage.setItem("educationLevel_fav", educationLevel);
   }, [educationLevel]);
 
   useEffect(() => {
-    sessionStorage.setItem("incomeLevel", incomeLevel);
+    sessionStorage.setItem("incomeLevel_fav", incomeLevel);
   }, [incomeLevel]);
 
   const handleLogout = async () => {
-    const auth = getAuth();
+    const authInstance = getAuth();
     try {
-      await signOut(auth);
-      navigate("/login");
+      await signOut(authInstance);
+      window.location.href = "/login"; // navigate 대체
     } catch (error) {
       console.error("로그아웃 에러:", error);
     }
   };
 
+  // 여기서는 메인 페이지와 달리 detail페이지 이동 코드가 없지만, 필요하다면 구현
   const handleNavigateToDetail = (id) => {
-    navigate(`/detail/${id}`);
+    window.location.href = `/detail/${id}`;
   };
 
   return (
@@ -164,10 +191,16 @@ function App() {
             </>
           ) : (
             <>
-              <button className="outline" onClick={() => navigate("/login")}>
+              <button
+                className="outline"
+                onClick={() => (window.location.href = "/login")}
+              >
                 로그인
               </button>
-              <button className="outline" onClick={() => navigate("/register")}>
+              <button
+                className="outline"
+                onClick={() => (window.location.href = "/register")}
+              >
                 회원가입
               </button>
             </>
@@ -176,13 +209,13 @@ function App() {
       </nav>
 
       <header className="page-header">
-        <h1>메인 페이지</h1>
+        <h1>즐겨찾기 페이지(관리자)</h1>
         {user && (
           <button
             className="favorite-history outline"
-            onClick={() => navigate("/favorites")}
+            onClick={() => window.history.back()}
           >
-            즐겨찾기 기록
+            메인 페이지
           </button>
         )}
       </header>
@@ -195,7 +228,12 @@ function App() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className="add-button" onClick={() => navigate("/add")}>
+        {/* 즐겨찾기 페이지에서 추가 버튼이 필요 없을 수 있지만,
+            메인 페이지와 동일한 레이아웃을 원한다면 그대로 둡니다. */}
+        <button
+          className="add-button"
+          onClick={() => (window.location.href = "/add")}
+        >
           +
         </button>
       </div>
@@ -248,11 +286,11 @@ function App() {
         </aside>
 
         <main className="scholarship-list">
-          {filteredScholarships.map((item) => (
+          {filteredFavorites.map((scholarship) => (
             <ScholarshipCard
-              key={item.id}
-              item={item}
-              onClick={() => handleNavigateToDetail(item.id)}
+              key={scholarship.id}
+              item={scholarship}
+              onClick={() => handleNavigateToDetail(scholarship.id)}
             />
           ))}
         </main>
@@ -261,4 +299,4 @@ function App() {
   );
 }
 
-export default App;
+export default FavoritesPage;
